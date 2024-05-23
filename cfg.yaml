@@ -1,0 +1,6 @@
+package: baconapi
+output: client.gen.go
+generate:
+  models: true
+  client: true
+  server: true

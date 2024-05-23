@@ -1,0 +1,41 @@
+openapi: 3.0.03
+info:
+  title: "Baconator"
+  description: "resource provisioner"
+  version: 0.0.1
+servers:
+  - url: 'https://api.evilrouter.com'
+paths:
+  /whoami:
+    get:
+      description: "return user from oauth token"
+      security:
+        - oauth2: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '403':
+          description: Unauthorized
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: "https://oauth2.googleapis.com/tokeninfo"
+          tokenUrl: "https://https://oauth2.googleapis.com/token"
+  schemas:
+    User:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: bob
+      type: object
+
+  
