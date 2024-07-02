@@ -8,12 +8,28 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// ResourcesPost implements POST /resources operation.
+	//
+	// Add a new resource type.
+	//
+	// POST /resources
+	ResourcesPost(ctx context.Context, req *Resource) (*Resource, error)
+	// ResourcesResourceIdGet implements GET /resources/{resourceId} operation.
+	//
+	// Return resources.
+	//
+	// GET /resources/{resourceId}
+	ResourcesResourceIdGet(ctx context.Context, params ResourcesResourceIdGetParams) (*Resource, error)
 	// WhoamiGet implements GET /whoami operation.
 	//
 	// Return user from oauth token.
 	//
 	// GET /whoami
-	WhoamiGet(ctx context.Context) (WhoamiGetRes, error)
+	WhoamiGet(ctx context.Context) (*User, error)
+	// NewError creates *ErrorStatusCode from error returned by handler.
+	//
+	// Used for common default response.
+	NewError(ctx context.Context, err error) *ErrorStatusCode
 }
 
 // Server implements http server based on OpenAPI v3 specification and

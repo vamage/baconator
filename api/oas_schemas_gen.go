@@ -2,6 +2,114 @@
 
 package api
 
+import (
+	"fmt"
+)
+
+func (s *ErrorStatusCode) Error() string {
+	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
+}
+
+// Ref: #/components/schemas/Error
+type Error struct {
+	Code    int32  `json:"code"`
+	Message string `json:"message"`
+}
+
+// GetCode returns the value of Code.
+func (s *Error) GetCode() int32 {
+	return s.Code
+}
+
+// GetMessage returns the value of Message.
+func (s *Error) GetMessage() string {
+	return s.Message
+}
+
+// SetCode sets the value of Code.
+func (s *Error) SetCode(val int32) {
+	s.Code = val
+}
+
+// SetMessage sets the value of Message.
+func (s *Error) SetMessage(val string) {
+	s.Message = val
+}
+
+// ErrorStatusCode wraps Error with StatusCode.
+type ErrorStatusCode struct {
+	StatusCode int
+	Response   Error
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *ErrorStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *ErrorStatusCode) GetResponse() Error {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *ErrorStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *ErrorStatusCode) SetResponse(val Error) {
+	s.Response = val
+}
+
+// Ref: #/components/schemas/Input
+type Input struct {
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Type        string    `json:"type"`
+	Value       OptString `json:"value"`
+}
+
+// GetName returns the value of Name.
+func (s *Input) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *Input) GetDescription() string {
+	return s.Description
+}
+
+// GetType returns the value of Type.
+func (s *Input) GetType() string {
+	return s.Type
+}
+
+// GetValue returns the value of Value.
+func (s *Input) GetValue() OptString {
+	return s.Value
+}
+
+// SetName sets the value of Name.
+func (s *Input) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *Input) SetDescription(val string) {
+	s.Description = val
+}
+
+// SetType sets the value of Type.
+func (s *Input) SetType(val string) {
+	s.Type = val
+}
+
+// SetValue sets the value of Value.
+func (s *Input) SetValue(val OptString) {
+	s.Value = val
+}
+
 type OAuth2 struct {
 	Token  string
 	Scopes []string
@@ -27,6 +135,78 @@ func (s *OAuth2) SetScopes(val []string) {
 	s.Scopes = val
 }
 
+// NewOptString returns new OptString with value set to v.
+func NewOptString(v string) OptString {
+	return OptString{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptString is optional string.
+type OptString struct {
+	Value string
+	Set   bool
+}
+
+// IsSet returns true if OptString was set.
+func (o OptString) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptString) Reset() {
+	var v string
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptString) SetTo(v string) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptString) Get() (v string, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// Ref: #/components/schemas/Resource
+type Resource struct {
+	Name           string  `json:"name"`
+	ResourceInputs []Input `json:"resourceInputs"`
+}
+
+// GetName returns the value of Name.
+func (s *Resource) GetName() string {
+	return s.Name
+}
+
+// GetResourceInputs returns the value of ResourceInputs.
+func (s *Resource) GetResourceInputs() []Input {
+	return s.ResourceInputs
+}
+
+// SetName sets the value of Name.
+func (s *Resource) SetName(val string) {
+	s.Name = val
+}
+
+// SetResourceInputs sets the value of ResourceInputs.
+func (s *Resource) SetResourceInputs(val []Input) {
+	s.ResourceInputs = val
+}
+
 // Ref: #/components/schemas/User
 type User struct {
 	Name string `json:"name"`
@@ -41,10 +221,3 @@ func (s *User) GetName() string {
 func (s *User) SetName(val string) {
 	s.Name = val
 }
-
-func (*User) whoamiGetRes() {}
-
-// WhoamiGetForbidden is response for WhoamiGet operation.
-type WhoamiGetForbidden struct{}
-
-func (*WhoamiGetForbidden) whoamiGetRes() {}
