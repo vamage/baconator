@@ -25,7 +25,10 @@ func ReadTF(url, moduleName string) (resource *api.Resource, err error) {
 		i := api.Input{
 			Name:        n,
 			Description: v.Description,
-			Type:        v.Type,
+			Type: api.OptString{
+				Value: v.Type,
+				Set:   true,
+			},
 		}
 		resource.ResourceInputs = append(resource.ResourceInputs, i)
 

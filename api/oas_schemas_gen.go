@@ -4,6 +4,8 @@ package api
 
 import (
 	"fmt"
+
+	"github.com/google/uuid"
 )
 
 func (s *ErrorStatusCode) Error() string {
@@ -64,10 +66,23 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 
 // Ref: #/components/schemas/Input
 type Input struct {
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Type        string    `json:"type"`
-	Value       OptString `json:"value"`
+	ApiVersion  OptString        `json:"apiVersion"`
+	Kind        OptString        `json:"kind"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	Metadata    OptInputMetadata `json:"metadata"`
+	Type        OptString        `json:"type"`
+	Value       OptString        `json:"value"`
+}
+
+// GetApiVersion returns the value of ApiVersion.
+func (s *Input) GetApiVersion() OptString {
+	return s.ApiVersion
+}
+
+// GetKind returns the value of Kind.
+func (s *Input) GetKind() OptString {
+	return s.Kind
 }
 
 // GetName returns the value of Name.
@@ -80,14 +95,29 @@ func (s *Input) GetDescription() string {
 	return s.Description
 }
 
+// GetMetadata returns the value of Metadata.
+func (s *Input) GetMetadata() OptInputMetadata {
+	return s.Metadata
+}
+
 // GetType returns the value of Type.
-func (s *Input) GetType() string {
+func (s *Input) GetType() OptString {
 	return s.Type
 }
 
 // GetValue returns the value of Value.
 func (s *Input) GetValue() OptString {
 	return s.Value
+}
+
+// SetApiVersion sets the value of ApiVersion.
+func (s *Input) SetApiVersion(val OptString) {
+	s.ApiVersion = val
+}
+
+// SetKind sets the value of Kind.
+func (s *Input) SetKind(val OptString) {
+	s.Kind = val
 }
 
 // SetName sets the value of Name.
@@ -100,14 +130,30 @@ func (s *Input) SetDescription(val string) {
 	s.Description = val
 }
 
+// SetMetadata sets the value of Metadata.
+func (s *Input) SetMetadata(val OptInputMetadata) {
+	s.Metadata = val
+}
+
 // SetType sets the value of Type.
-func (s *Input) SetType(val string) {
+func (s *Input) SetType(val OptString) {
 	s.Type = val
 }
 
 // SetValue sets the value of Value.
 func (s *Input) SetValue(val OptString) {
 	s.Value = val
+}
+
+type InputMetadata map[string]string
+
+func (s *InputMetadata) init() InputMetadata {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
 }
 
 type OAuth2 struct {
@@ -133,6 +179,98 @@ func (s *OAuth2) SetToken(val string) {
 // SetScopes sets the value of Scopes.
 func (s *OAuth2) SetScopes(val []string) {
 	s.Scopes = val
+}
+
+// NewOptInputMetadata returns new OptInputMetadata with value set to v.
+func NewOptInputMetadata(v InputMetadata) OptInputMetadata {
+	return OptInputMetadata{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInputMetadata is optional InputMetadata.
+type OptInputMetadata struct {
+	Value InputMetadata
+	Set   bool
+}
+
+// IsSet returns true if OptInputMetadata was set.
+func (o OptInputMetadata) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInputMetadata) Reset() {
+	var v InputMetadata
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInputMetadata) SetTo(v InputMetadata) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInputMetadata) Get() (v InputMetadata, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInputMetadata) Or(d InputMetadata) InputMetadata {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptInt64 returns new OptInt64 with value set to v.
+func NewOptInt64(v int64) OptInt64 {
+	return OptInt64{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInt64 is optional int64.
+type OptInt64 struct {
+	Value int64
+	Set   bool
+}
+
+// IsSet returns true if OptInt64 was set.
+func (o OptInt64) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInt64) Reset() {
+	var v int64
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInt64) SetTo(v int64) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInt64) Get() (v int64, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInt64) Or(d int64) int64 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
 }
 
 // NewOptString returns new OptString with value set to v.
@@ -181,6 +319,144 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
+// NewOptUUID returns new OptUUID with value set to v.
+func NewOptUUID(v uuid.UUID) OptUUID {
+	return OptUUID{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUUID is optional uuid.UUID.
+type OptUUID struct {
+	Value uuid.UUID
+	Set   bool
+}
+
+// IsSet returns true if OptUUID was set.
+func (o OptUUID) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUUID) Reset() {
+	var v uuid.UUID
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUUID) SetTo(v uuid.UUID) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUUID) Get() (v uuid.UUID, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUUID) Or(d uuid.UUID) uuid.UUID {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserMetadata returns new OptUserMetadata with value set to v.
+func NewOptUserMetadata(v UserMetadata) OptUserMetadata {
+	return OptUserMetadata{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserMetadata is optional UserMetadata.
+type OptUserMetadata struct {
+	Value UserMetadata
+	Set   bool
+}
+
+// IsSet returns true if OptUserMetadata was set.
+func (o OptUserMetadata) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserMetadata) Reset() {
+	var v UserMetadata
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserMetadata) SetTo(v UserMetadata) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserMetadata) Get() (v UserMetadata, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserMetadata) Or(d UserMetadata) UserMetadata {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserSpec returns new OptUserSpec with value set to v.
+func NewOptUserSpec(v UserSpec) OptUserSpec {
+	return OptUserSpec{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserSpec is optional UserSpec.
+type OptUserSpec struct {
+	Value UserSpec
+	Set   bool
+}
+
+// IsSet returns true if OptUserSpec was set.
+func (o OptUserSpec) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserSpec) Reset() {
+	var v UserSpec
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserSpec) SetTo(v UserSpec) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserSpec) Get() (v UserSpec, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserSpec) Or(d UserSpec) UserSpec {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // Ref: #/components/schemas/Resource
 type Resource struct {
 	Name           string  `json:"name"`
@@ -209,15 +485,167 @@ func (s *Resource) SetResourceInputs(val []Input) {
 
 // Ref: #/components/schemas/User
 type User struct {
-	Name string `json:"name"`
+	ID         OptInt64        `json:"id"`
+	ApiVersion OptString       `json:"apiVersion"`
+	Kind       OptString       `json:"kind"`
+	Metadata   OptUserMetadata `json:"metadata"`
+	Spec       OptUserSpec     `json:"spec"`
+	Name       OptString       `json:"name"`
+	UUID       OptUUID         `json:"uuid"`
+}
+
+// GetID returns the value of ID.
+func (s *User) GetID() OptInt64 {
+	return s.ID
+}
+
+// GetApiVersion returns the value of ApiVersion.
+func (s *User) GetApiVersion() OptString {
+	return s.ApiVersion
+}
+
+// GetKind returns the value of Kind.
+func (s *User) GetKind() OptString {
+	return s.Kind
+}
+
+// GetMetadata returns the value of Metadata.
+func (s *User) GetMetadata() OptUserMetadata {
+	return s.Metadata
+}
+
+// GetSpec returns the value of Spec.
+func (s *User) GetSpec() OptUserSpec {
+	return s.Spec
 }
 
 // GetName returns the value of Name.
-func (s *User) GetName() string {
+func (s *User) GetName() OptString {
 	return s.Name
 }
 
+// GetUUID returns the value of UUID.
+func (s *User) GetUUID() OptUUID {
+	return s.UUID
+}
+
+// SetID sets the value of ID.
+func (s *User) SetID(val OptInt64) {
+	s.ID = val
+}
+
+// SetApiVersion sets the value of ApiVersion.
+func (s *User) SetApiVersion(val OptString) {
+	s.ApiVersion = val
+}
+
+// SetKind sets the value of Kind.
+func (s *User) SetKind(val OptString) {
+	s.Kind = val
+}
+
+// SetMetadata sets the value of Metadata.
+func (s *User) SetMetadata(val OptUserMetadata) {
+	s.Metadata = val
+}
+
+// SetSpec sets the value of Spec.
+func (s *User) SetSpec(val OptUserSpec) {
+	s.Spec = val
+}
+
 // SetName sets the value of Name.
-func (s *User) SetName(val string) {
+func (s *User) SetName(val OptString) {
 	s.Name = val
+}
+
+// SetUUID sets the value of UUID.
+func (s *User) SetUUID(val OptUUID) {
+	s.UUID = val
+}
+
+type UserMetadata map[string]string
+
+func (s *UserMetadata) init() UserMetadata {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+type UserSpec map[string]UserSpecItem
+
+func (s *UserSpec) init() UserSpec {
+	m := *s
+	if m == nil {
+		m = map[string]UserSpecItem{}
+		*s = m
+	}
+	return m
+}
+
+// UserSpecItem represents sum type.
+type UserSpecItem struct {
+	Type        UserSpecItemType // switch on this field
+	String      string
+	StringArray []string
+}
+
+// UserSpecItemType is oneOf type of UserSpecItem.
+type UserSpecItemType string
+
+// Possible values for UserSpecItemType.
+const (
+	StringUserSpecItem      UserSpecItemType = "string"
+	StringArrayUserSpecItem UserSpecItemType = "[]string"
+)
+
+// IsString reports whether UserSpecItem is string.
+func (s UserSpecItem) IsString() bool { return s.Type == StringUserSpecItem }
+
+// IsStringArray reports whether UserSpecItem is []string.
+func (s UserSpecItem) IsStringArray() bool { return s.Type == StringArrayUserSpecItem }
+
+// SetString sets UserSpecItem to string.
+func (s *UserSpecItem) SetString(v string) {
+	s.Type = StringUserSpecItem
+	s.String = v
+}
+
+// GetString returns string and true boolean if UserSpecItem is string.
+func (s UserSpecItem) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringUserSpecItem returns new UserSpecItem from string.
+func NewStringUserSpecItem(v string) UserSpecItem {
+	var s UserSpecItem
+	s.SetString(v)
+	return s
+}
+
+// SetStringArray sets UserSpecItem to []string.
+func (s *UserSpecItem) SetStringArray(v []string) {
+	s.Type = StringArrayUserSpecItem
+	s.StringArray = v
+}
+
+// GetStringArray returns []string and true boolean if UserSpecItem is []string.
+func (s UserSpecItem) GetStringArray() (v []string, ok bool) {
+	if !s.IsStringArray() {
+		return v, false
+	}
+	return s.StringArray, true
+}
+
+// NewStringArrayUserSpecItem returns new UserSpecItem from []string.
+func NewStringArrayUserSpecItem(v []string) UserSpecItem {
+	var s UserSpecItem
+	s.SetStringArray(v)
+	return s
 }

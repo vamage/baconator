@@ -20,6 +20,30 @@ type Handler interface {
 	//
 	// GET /resources/{resourceId}
 	ResourcesResourceIdGet(ctx context.Context, params ResourcesResourceIdGetParams) (*Resource, error)
+	// UserPatch implements PATCH /user operation.
+	//
+	// Update a user.
+	//
+	// PATCH /user
+	UserPatch(ctx context.Context, req *User) (*User, error)
+	// UserPost implements POST /user operation.
+	//
+	// Add a new user.
+	//
+	// POST /user
+	UserPost(ctx context.Context, req *User) (*User, error)
+	// UsersUserIdGet implements GET /users/{userId} operation.
+	//
+	// Return user by id.
+	//
+	// GET /users/{userId}
+	UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (*User, error)
+	// UsersYamlGet implements GET /users.yaml operation.
+	//
+	// Return all users.
+	//
+	// GET /users.yaml
+	UsersYamlGet(ctx context.Context) (*User, error)
 	// WhoamiGet implements GET /whoami operation.
 	//
 	// Return user from oauth token.

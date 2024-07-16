@@ -1,17 +1,14 @@
 package security
 
 import (
-	"context"
-	"fmt"
-
 	"baconator/api"
-	"cloud.google.com/go/auth/credentials/idtoken"
+	"context"
 )
 
 type Security struct{}
 
 func (s *Security) HandleOAuth2(ctx context.Context, operation string, t api.OAuth2) (context.Context, error) {
-	p, err := idtoken.Validate(ctx, t.Token, "")
+	/*p, err := idtoken.Validate(ctx, t.Token, "")
 	if err != nil {
 		return nil, err
 	}
@@ -22,5 +19,7 @@ func (s *Security) HandleOAuth2(ctx context.Context, operation string, t api.OAu
 	}
 
 	ctx = context.WithValue(ctx, "email", v)
+
+	*/
 	return ctx, nil
 }

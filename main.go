@@ -1,6 +1,7 @@
 package main
 
 import (
+	"baconator/config"
 	"log"
 	"net/http"
 
@@ -12,11 +13,12 @@ import (
 func main() {
 	service := &handlers.Handler{}
 	sec := &security.Security{}
+	config.New()
 	srv, err := api.NewServer(service, sec)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := http.ListenAndServe(":8080", srv); err != nil {
+	if err := http.ListenAndServe(":8081", srv); err != nil {
 		log.Fatal(err)
 	}
 }
