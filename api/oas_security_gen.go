@@ -34,7 +34,10 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 }
 
 var oauth2Scopes = map[string][]string{
-	"WhoamiGet": []string{},
+	"ResourcesPost":          []string{},
+	"ResourcesResourceIdGet": []string{},
+	"UserPatch":              []string{},
+	"WhoamiGet":              []string{},
 }
 
 func (s *Server) securityOAuth2(ctx context.Context, operationName string, req *http.Request) (context.Context, bool, error) {

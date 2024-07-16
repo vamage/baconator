@@ -8,12 +8,52 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// ResourcesPost implements POST /resources operation.
+	//
+	// Add a new resource type.
+	//
+	// POST /resources
+	ResourcesPost(ctx context.Context, req *Resource) (*Resource, error)
+	// ResourcesResourceIdGet implements GET /resources/{resourceId} operation.
+	//
+	// Return resources.
+	//
+	// GET /resources/{resourceId}
+	ResourcesResourceIdGet(ctx context.Context, params ResourcesResourceIdGetParams) (*Resource, error)
+	// UserPatch implements PATCH /user operation.
+	//
+	// Update a user.
+	//
+	// PATCH /user
+	UserPatch(ctx context.Context, req *User) (*User, error)
+	// UserPost implements POST /user operation.
+	//
+	// Add a new user.
+	//
+	// POST /user
+	UserPost(ctx context.Context, req *User) (*User, error)
+	// UsersUserIdGet implements GET /users/{userId} operation.
+	//
+	// Return user by id.
+	//
+	// GET /users/{userId}
+	UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (*User, error)
+	// UsersYamlGet implements GET /users.yaml operation.
+	//
+	// Return all users.
+	//
+	// GET /users.yaml
+	UsersYamlGet(ctx context.Context) (*User, error)
 	// WhoamiGet implements GET /whoami operation.
 	//
 	// Return user from oauth token.
 	//
 	// GET /whoami
-	WhoamiGet(ctx context.Context) (WhoamiGetRes, error)
+	WhoamiGet(ctx context.Context) (*User, error)
+	// NewError creates *ErrorStatusCode from error returned by handler.
+	//
+	// Used for common default response.
+	NewError(ctx context.Context, err error) *ErrorStatusCode
 }
 
 // Server implements http server based on OpenAPI v3 specification and

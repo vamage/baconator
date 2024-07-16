@@ -13,11 +13,73 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// ResourcesPost implements POST /resources operation.
+//
+// Add a new resource type.
+//
+// POST /resources
+func (UnimplementedHandler) ResourcesPost(ctx context.Context, req *Resource) (r *Resource, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ResourcesResourceIdGet implements GET /resources/{resourceId} operation.
+//
+// Return resources.
+//
+// GET /resources/{resourceId}
+func (UnimplementedHandler) ResourcesResourceIdGet(ctx context.Context, params ResourcesResourceIdGetParams) (r *Resource, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UserPatch implements PATCH /user operation.
+//
+// Update a user.
+//
+// PATCH /user
+func (UnimplementedHandler) UserPatch(ctx context.Context, req *User) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UserPost implements POST /user operation.
+//
+// Add a new user.
+//
+// POST /user
+func (UnimplementedHandler) UserPost(ctx context.Context, req *User) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UsersUserIdGet implements GET /users/{userId} operation.
+//
+// Return user by id.
+//
+// GET /users/{userId}
+func (UnimplementedHandler) UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UsersYamlGet implements GET /users.yaml operation.
+//
+// Return all users.
+//
+// GET /users.yaml
+func (UnimplementedHandler) UsersYamlGet(ctx context.Context) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // WhoamiGet implements GET /whoami operation.
 //
 // Return user from oauth token.
 //
 // GET /whoami
-func (UnimplementedHandler) WhoamiGet(ctx context.Context) (r WhoamiGetRes, _ error) {
+func (UnimplementedHandler) WhoamiGet(ctx context.Context) (r *User, _ error) {
 	return r, ht.ErrNotImplemented
+}
+
+// NewError creates *ErrorStatusCode from error returned by handler.
+//
+// Used for common default response.
+func (UnimplementedHandler) NewError(ctx context.Context, err error) (r *ErrorStatusCode) {
+	r = new(ErrorStatusCode)
+	return r
 }

@@ -1,25 +1,174 @@
-openapi: 3.0.03
+openapi: 3.0.3
 info:
   title: "Baconator"
   description: "resource provisioner"
   version: 0.0.1
 servers:
-  - url: 'https://api.evilrouter.com'
+  - url: 'http://localhost:8081'
+    description: 'Local server'
 paths:
   /whoami:
     get:
       description: "return user from oauth token"
       security:
-        - oauth2: []
+        - oauth2: [ ]
       responses:
-        '200':
+        200:
           description: Success
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '403':
-          description: Unauthorized
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}:
+    get:
+      description: "return user by id"
+      security:
+        []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "user id"
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users.yaml:
+    get:
+      description: "return all users"
+      security:
+        []
+
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /user:
+    post:
+      description: "Add a new user"
+      security: []
+      requestBody:
+        description: "User to add"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: "Update a user"
+      security:
+        - oauth2: [ ]
+      requestBody:
+        description: "User to update"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /resources/{resourceId}:
+    get:
+      description: "return resources"
+      security:
+        - oauth2: [ ]
+      parameters:
+        - in: path
+          name: resourceId
+          required: true
+          schema:
+            type: integer
+          description: "resource id"
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /resources:
+    post:
+      description: "Add a new resource type"
+      security:
+        - oauth2: [ ]
+      requestBody:
+        description: "Resource to add"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resource'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   securitySchemes:
     oauth2:
@@ -29,13 +178,87 @@ components:
           authorizationUrl: "https://oauth2.googleapis.com/tokeninfo"
           tokenUrl: "https://https://oauth2.googleapis.com/token"
   schemas:
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      type: object
     User:
       required:
-        - name
       properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        apiVersion:
+          type: string
+          default: "backstage.io/v1alpha1"
+        kind:
+            type: string
+            default: "User"
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        spec:
+          type: object
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: array
+                items:
+                  type: string
         name:
           type: string
           example: bob
+        uuid:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+      type: object
+    Resource:
+      required:
+        - name
+        - resourceInputs
+      properties:
+        name:
+          type: string
+          example: gcs-bucket
+        resourceInputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Input'
+      type: object
+    Input:
+      required:
+        - name
+        - description
+        - default
+      properties:
+        apiVersion:
+          type: string
+          default: "backstage.io/v1alpha1"
+        kind:
+            type: string
+            default: "User"
+        name:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        type:
+          type: string
+        value:
+          type: string
       type: object
 
   
