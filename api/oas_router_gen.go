@@ -88,7 +88,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						break
 					}
 
-					// Param: "resourceId"
+					// Param: "resourceID"
 					// Leaf parameter
 					args[0] = elem
 					elem = ""
@@ -97,7 +97,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						// Leaf node.
 						switch r.Method {
 						case "GET":
-							s.handleResourcesResourceIdGetRequest([1]string{
+							s.handleResourcesResourceIDGetRequest([1]string{
 								args[0],
 							}, elemIsEscaped, w, r)
 						default:
@@ -346,7 +346,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						break
 					}
 
-					// Param: "resourceId"
+					// Param: "resourceID"
 					// Leaf parameter
 					args[0] = elem
 					elem = ""
@@ -354,11 +354,11 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					if len(elem) == 0 {
 						switch method {
 						case "GET":
-							// Leaf: ResourcesResourceIdGet
-							r.name = "ResourcesResourceIdGet"
+							// Leaf: ResourcesResourceIDGet
+							r.name = "ResourcesResourceIDGet"
 							r.summary = ""
 							r.operationID = ""
-							r.pathPattern = "/resources/{resourceId}"
+							r.pathPattern = "/resources/{resourceID}"
 							r.args = args
 							r.count = 1
 							return r, true

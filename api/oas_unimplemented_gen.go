@@ -22,12 +22,12 @@ func (UnimplementedHandler) ResourcesPost(ctx context.Context, req *Resource) (r
 	return r, ht.ErrNotImplemented
 }
 
-// ResourcesResourceIdGet implements GET /resources/{resourceId} operation.
+// ResourcesResourceIDGet implements GET /resources/{resourceID} operation.
 //
 // Return resources.
 //
-// GET /resources/{resourceId}
-func (UnimplementedHandler) ResourcesResourceIdGet(ctx context.Context, params ResourcesResourceIdGetParams) (r *Resource, _ error) {
+// GET /resources/{resourceID}
+func (UnimplementedHandler) ResourcesResourceIDGet(ctx context.Context, params ResourcesResourceIDGetParams) (r *Resource, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

@@ -1,12 +1,16 @@
+// Package security provides the implementation of the security interface.
 package security
 
 import (
-	"baconator/api"
 	"context"
+
+	"github.com/vamage/baconator/api"
 )
 
+// Security is the struct that contains the implementation of the security interface.
 type Security struct{}
 
+// HandleOAuth2 implements the HandleOAuth2 method of the security interface.
 func (s *Security) HandleOAuth2(ctx context.Context, operation string, t api.OAuth2) (context.Context, error) {
 	/*p, err := idtoken.Validate(ctx, t.Token, "")
 	if err != nil {

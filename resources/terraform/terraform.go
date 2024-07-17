@@ -1,12 +1,16 @@
+// Package terraform provides a function to read terraform module and return the inputs
 package terraform
 
 import (
-	"baconator/api"
 	"fmt"
+
+	"github.com/vamage/baconator/api"
+
 	"github.com/forensicanalysis/gitfs"
 	"github.com/hashicorp/terraform-config-inspect/tfconfig"
 )
 
+// ReadTF reads the terraform module and returns the inputs.
 func ReadTF(url, moduleName string) (resource *api.Resource, err error) {
 	resource = &api.Resource{
 		Name:           "moduleName",
@@ -19,7 +23,7 @@ func ReadTF(url, moduleName string) (resource *api.Resource, err error) {
 	wrap := tfconfig.WrapFS(fsys)
 	module, diag := tfconfig.LoadModuleFromFilesystem(wrap, moduleName)
 	if diag.Err() != nil {
-		return nil, fmt.Errorf("error reading module %s, %v", moduleName, err)
+		return nil, fmt.Errorf("error reading module %s, %w", moduleName, err)
 	}
 	for n, v := range module.Variables {
 		i := api.Input{
@@ -31,7 +35,6 @@ func ReadTF(url, moduleName string) (resource *api.Resource, err error) {
 			},
 		}
 		resource.ResourceInputs = append(resource.ResourceInputs, i)
-
 	}
 	return resource, nil
 }

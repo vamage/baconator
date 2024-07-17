@@ -1,9 +1,13 @@
+// package main
+// This package is for testing via CLI only and will be removed in future releases.
 package main
 
 import (
-	"baconator/api"
 	"context"
 	"fmt"
+
+	"github.com/vamage/baconator/api"
+
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
@@ -13,7 +17,6 @@ func main() {
 	gts, err := google.DefaultTokenSource(ctx)
 	if err != nil {
 		fmt.Printf("d%+v", err)
-
 	}
 	client, err := api.NewClient("http://127.0.0.1:8080/", &tokenSource{t: gts})
 	if err != nil {
@@ -24,7 +27,6 @@ func main() {
 		fmt.Printf("dd %+v", err)
 	}
 	fmt.Printf("zz%+v", r)
-
 }
 
 type tokenSource struct {
@@ -36,7 +38,7 @@ func (t *tokenSource) OAuth2(ctx context.Context, opperationName string) (api.OA
 	// working environment.
 	credentials, err := google.FindDefaultCredentials(ctx, "https://www.googleapis.com/auth/cloud-platform.read-only")
 	if err != nil {
-		fmt.Printf("failed to generate default credentials: %w", err)
+		fmt.Printf("failed to generate default credentials: %v", err)
 	}
 
 	// Get the ID token.

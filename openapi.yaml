@@ -118,18 +118,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /resources/{resourceId}:
+  /resources/{resourceID}:
     get:
       description: "return resources"
       security:
         - oauth2: [ ]
       parameters:
         - in: path
-          name: resourceId
+          name: resourceID
           required: true
           schema:
             type: integer
-          description: "resource id"
+          description: "resource ID"
       responses:
         200:
           description: Success

@@ -35,7 +35,7 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 
 var oauth2Scopes = map[string][]string{
 	"ResourcesPost":          []string{},
-	"ResourcesResourceIdGet": []string{},
+	"ResourcesResourceIDGet": []string{},
 	"UserPatch":              []string{},
 	"WhoamiGet":              []string{},
 }

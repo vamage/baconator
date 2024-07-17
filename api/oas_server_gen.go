@@ -14,12 +14,12 @@ type Handler interface {
 	//
 	// POST /resources
 	ResourcesPost(ctx context.Context, req *Resource) (*Resource, error)
-	// ResourcesResourceIdGet implements GET /resources/{resourceId} operation.
+	// ResourcesResourceIDGet implements GET /resources/{resourceID} operation.
 	//
 	// Return resources.
 	//
-	// GET /resources/{resourceId}
-	ResourcesResourceIdGet(ctx context.Context, params ResourcesResourceIdGetParams) (*Resource, error)
+	// GET /resources/{resourceID}
+	ResourcesResourceIDGet(ctx context.Context, params ResourcesResourceIDGetParams) (*Resource, error)
 	// UserPatch implements PATCH /user operation.
 	//
 	// Update a user.

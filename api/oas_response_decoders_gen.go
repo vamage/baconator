@@ -106,7 +106,7 @@ func decodeResourcesPostResponse(resp *http.Response) (res *Resource, _ error) {
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeResourcesResourceIdGetResponse(resp *http.Response) (res *Resource, _ error) {
+func decodeResourcesResourceIDGetResponse(resp *http.Response) (res *Resource, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.

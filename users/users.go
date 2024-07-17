@@ -1,19 +1,16 @@
+// Package users provides the implementation of the users API.
 package users
 
 import (
-	"baconator/api"
-	"fmt"
+	"github.com/vamage/baconator/api"
+
 	"golang.org/x/net/context"
 )
 
-type UserService struct {
-}
+// UserService is the struct that contains the implementation of the API handlers.
+type UserService struct{}
 
-type User struct {
-	Name string `json:"name"`
-}
-
+// WhoamiGet returns the user information.
 func (t *UserService) WhoamiGet(ctx context.Context) (*api.User, error) {
-	fmt.Sprintf("calledwhoami\n")
-	return (*api.User)(&User{Name: "greg"}), nil
+	return &api.User{Name: api.NewOptString("greg")}, nil
 }
