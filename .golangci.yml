@@ -1,4 +1,7 @@
+---
 run:
+  # Timeout for analysis, e.g. 30s, 5m.
+  # Default: 1m
   timeout: 5m
   modules-download-mode: readonly
 
@@ -17,6 +20,7 @@ linters:
     - durationcheck
     - goconst
     - godot
+    - gosec
     - sqlclosecheck
     - tagalign
     - mnd
@@ -32,6 +36,7 @@ linters:
     - ineffassign
     - noctx
     - gocyclo
+
 
 linters-settings:
   gofumpt:
@@ -49,12 +54,13 @@ linters-settings:
       - '1'
       - '2'
       - '3'
-
-
 issues:
-  exclude-use-default: false
+  # Disable max issues per linter.
   max-issues-per-linter: 0
+  # Disable max same issues.
   max-same-issues: 0
+  # Exclude default linters.
+  exclude-use-default: false
   exclude:
     - unused-parameter
     - line contains TODO/BUG/FIXME

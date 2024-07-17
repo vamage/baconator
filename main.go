@@ -2,25 +2,28 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"time"
 
-	"github.com/vamage/baconator/config"
-
-	"github.com/vamage/baconator/api"
 	"github.com/vamage/baconator/handlers"
 	"github.com/vamage/baconator/security"
+
+	"github.com/vamage/baconator/api"
 )
 
 func main() {
+	fmt.Println("Hello, World!")
 	service := &handlers.Handler{}
 	sec := &security.Security{}
-	config.New()
-	srv, err := api.NewServer(service, sec)
-	if err != nil {
-		log.Fatal(err)
+	srv, _ := api.NewServer(service, sec)
+	server := &http.Server{
+		Addr:              ":8081",
+		ReadHeaderTimeout: 3 * time.Second,
+		Handler:           srv,
 	}
-	if err := http.ListenAndServe(":8081", srv); err != nil {
+	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
 }
