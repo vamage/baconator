@@ -1,26 +1,33 @@
+// Package handlers implements the API handlers for the baconator API.
+//
+// It provides the implementation of the handler interface.
 package handlers
 
 import (
-	"baconator/api"
-	"baconator/config"
-	"baconator/resources/terraform"
-	"baconator/sql/user"
 	"context"
 	"fmt"
+
+	"github.com/vamage/baconator/api"
+	"github.com/vamage/baconator/config"
+	"github.com/vamage/baconator/resources/terraform"
+	"github.com/vamage/baconator/sql/user"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+// Handler is the struct that contains the implementation of the API handlers.
 type Handler struct{}
 
+// UsersYamlGet implements the users.yaml GET method of the API
+// This returns a list of users in the system.
 func (t *Handler) UsersYamlGet(ctx context.Context) (*api.User, error) {
-
 	c := config.GetConf()
 	u := user.New(c.Pool)
 	c.Logger.Info("listing users")
-	list, err := u.ListUsers(context.Background())
+	list, err := u.ListUsers(ctx)
 	if err != nil {
-		c.Logger.Error("error listing users", err)
+		c.Logger.Error("error listing users", "error", err)
 		return nil, err404
 	}
 	var users []api.User
@@ -38,7 +45,7 @@ func (t *Handler) UsersYamlGet(ctx context.Context) (*api.User, error) {
 	}
 	c.Logger.Info("listing users", "users", users)
 	return &users[0], nil
-	//return users, nil
+	// return users, nil
 }
 
 var err404 = &api.ErrorStatusCode{
@@ -49,11 +56,15 @@ var err404 = &api.ErrorStatusCode{
 	},
 }
 
+// UserPatch implements the User Patch method of the API
+// This is the implementation of the Patch method for the /user endpoint.
 func (t *Handler) UserPatch(ctx context.Context, req *api.User) (*api.User, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
+// UserPost implements the User POST method of the API
+// This is the implementation of the POST method for the /user endpoint.
 func (t *Handler) UserPost(ctx context.Context, req *api.User) (*api.User, error) {
 	c := config.GetConf()
 	u := user.New(c.Pool)
@@ -65,10 +76,11 @@ func (t *Handler) UserPost(ctx context.Context, req *api.User) (*api.User, error
 		},
 	})
 	if err != nil {
-		c.Logger.Error("error creating user", err)
+		c.Logger.Error("error creating user", "error", err)
 		return nil, err404
 	}
-	return &api.User{Name: api.NewOptString(r.Name),
+	return &api.User{
+		Name: api.NewOptString(r.Name),
 		ID: api.OptInt64{
 			Value: r.ID,
 			Set:   true,
@@ -76,12 +88,14 @@ func (t *Handler) UserPost(ctx context.Context, req *api.User) (*api.User, error
 	}, nil
 }
 
+// UsersUserIdGet implements the UsersUserId GET method of the API
+// This is the implementation of the GET method for the /users/{userId} endpoint.
 func (t *Handler) UsersUserIdGet(ctx context.Context, params api.UsersUserIdGetParams) (*api.User, error) {
 	c := config.GetConf()
 	u := user.New(c.Pool)
 	f, err := u.GetUser(context.Background(), params.UserId)
 	if err != nil {
-		c.Logger.Error("error getting user", err)
+		c.Logger.Error("error getting user", "errror", err)
 		return nil, err404
 	}
 	return &api.User{
@@ -93,14 +107,17 @@ func (t *Handler) UsersUserIdGet(ctx context.Context, params api.UsersUserIdGetP
 	}, nil
 }
 
+// ResourcesPost implements the Resources POST method of the API.
 func (t *Handler) ResourcesPost(ctx context.Context, req *api.Resource) (*api.Resource, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
-func (t *Handler) ResourcesResourceIdGet(ctx context.Context, params api.ResourcesResourceIdGetParams) (*api.Resource, error) {
-	// TODO implement me
-	if params.ResourceId == 0 {
+// ResourcesResourceIDGet implements the ResourcesResourceId GET method of the API.
+func (t *Handler) ResourcesResourceIDGet(ctx context.Context,
+	params api.ResourcesResourceIDGetParams,
+) (*api.Resource, error) {
+	if params.ResourceID == 0 {
 		return nil, &api.ErrorStatusCode{
 			StatusCode: 403,
 			Response: api.Error{
@@ -110,13 +127,14 @@ func (t *Handler) ResourcesResourceIdGet(ctx context.Context, params api.Resourc
 		}
 	}
 	a := api.Resource{
-		Name:           fmt.Sprintf("resource-%d", params.ResourceId),
+		Name:           fmt.Sprintf("resource-%d", params.ResourceID),
 		ResourceInputs: nil,
 	}
 	a.GetName()
 	return &a, nil
 }
 
+// NewError creates a new error response if one is needed.
 func (t *Handler) NewError(ctx context.Context, err error) *api.ErrorStatusCode {
 	// TODO implement me
 	return &api.ErrorStatusCode{
@@ -128,6 +146,7 @@ func (t *Handler) NewError(ctx context.Context, err error) *api.ErrorStatusCode 
 	}
 }
 
+// ListResourceTypesGet implements the ListResourceTypes GET method of the API.
 func (t *Handler) ListResourceTypesGet(ctx context.Context) (resp *api.Resource, err error) {
 	// TODO implement me
 	resp, err = terraform.ReadTF("https://github.com/vamage/baconator-modules", "testing-variables")
@@ -137,10 +156,7 @@ func (t *Handler) ListResourceTypesGet(ctx context.Context) (resp *api.Resource,
 	return resp, nil
 }
 
-type User struct {
-	Name string `json:"name"`
-}
-
+// WhoamiGet implements the Whoami GET method of the API.
 func (t *Handler) WhoamiGet(ctx context.Context) (*api.User, error) {
 	email, ok := ctx.Value("email").(string)
 	if !ok {

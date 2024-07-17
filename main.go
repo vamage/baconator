@@ -1,13 +1,15 @@
+// Package main contains the main function that starts the server.
 package main
 
 import (
-	"baconator/config"
 	"log"
 	"net/http"
 
-	"baconator/api"
-	"baconator/handlers"
-	"baconator/security"
+	"github.com/vamage/baconator/config"
+
+	"github.com/vamage/baconator/api"
+	"github.com/vamage/baconator/handlers"
+	"github.com/vamage/baconator/security"
 )
 
 func main() {

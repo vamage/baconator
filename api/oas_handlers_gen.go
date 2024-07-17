@@ -187,19 +187,19 @@ func (s *Server) handleResourcesPostRequest(args [0]string, argsEscaped bool, w 
 	}
 }
 
-// handleResourcesResourceIdGetRequest handles GET /resources/{resourceId} operation.
+// handleResourcesResourceIDGetRequest handles GET /resources/{resourceID} operation.
 //
 // Return resources.
 //
-// GET /resources/{resourceId}
-func (s *Server) handleResourcesResourceIdGetRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+// GET /resources/{resourceID}
+func (s *Server) handleResourcesResourceIDGetRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
 		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/resources/{resourceId}"),
+		semconv.HTTPRouteKey.String("/resources/{resourceID}"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "ResourcesResourceIdGet",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "ResourcesResourceIDGet",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -230,7 +230,7 @@ func (s *Server) handleResourcesResourceIdGetRequest(args [1]string, argsEscaped
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "ResourcesResourceIdGet",
+			Name: "ResourcesResourceIDGet",
 			ID:   "",
 		}
 	)
@@ -238,7 +238,7 @@ func (s *Server) handleResourcesResourceIdGetRequest(args [1]string, argsEscaped
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
-			sctx, ok, err := s.securityOAuth2(ctx, "ResourcesResourceIdGet", r)
+			sctx, ok, err := s.securityOAuth2(ctx, "ResourcesResourceIDGet", r)
 			if err != nil {
 				err = &ogenerrors.SecurityError{
 					OperationContext: opErrContext,
@@ -280,7 +280,7 @@ func (s *Server) handleResourcesResourceIdGetRequest(args [1]string, argsEscaped
 			return
 		}
 	}
-	params, err := decodeResourcesResourceIdGetParams(args, argsEscaped, r)
+	params, err := decodeResourcesResourceIDGetParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
 			OperationContext: opErrContext,
@@ -295,22 +295,22 @@ func (s *Server) handleResourcesResourceIdGetRequest(args [1]string, argsEscaped
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "ResourcesResourceIdGet",
+			OperationName:    "ResourcesResourceIDGet",
 			OperationSummary: "",
 			OperationID:      "",
 			Body:             nil,
 			Params: middleware.Parameters{
 				{
-					Name: "resourceId",
+					Name: "resourceID",
 					In:   "path",
-				}: params.ResourceId,
+				}: params.ResourceID,
 			},
 			Raw: r,
 		}
 
 		type (
 			Request  = struct{}
-			Params   = ResourcesResourceIdGetParams
+			Params   = ResourcesResourceIDGetParams
 			Response = *Resource
 		)
 		response, err = middleware.HookMiddleware[
@@ -320,14 +320,14 @@ func (s *Server) handleResourcesResourceIdGetRequest(args [1]string, argsEscaped
 		](
 			m,
 			mreq,
-			unpackResourcesResourceIdGetParams,
+			unpackResourcesResourceIDGetParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.ResourcesResourceIdGet(ctx, params)
+				response, err = s.h.ResourcesResourceIDGet(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.ResourcesResourceIdGet(ctx, params)
+		response, err = s.h.ResourcesResourceIDGet(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
@@ -346,7 +346,7 @@ func (s *Server) handleResourcesResourceIdGetRequest(args [1]string, argsEscaped
 		return
 	}
 
-	if err := encodeResourcesResourceIdGetResponse(response, w, span); err != nil {
+	if err := encodeResourcesResourceIDGetResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)

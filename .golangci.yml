@@ -35,6 +35,8 @@ linters:
 
 linters-settings:
   gofumpt:
+    module-path: github.com/vamage/baconator
+    extra-rules: false
   mnd:
     # don't include the "operation" and "assign"
     checks:
@@ -53,3 +55,19 @@ issues:
   exclude-use-default: false
   max-issues-per-linter: 0
   max-same-issues: 0
+  exclude:
+    - unused-parameter
+    - line contains TODO/BUG/FIXME
+    - var-naming
+  exclude-dirs:
+    - api
+    - backstage
+    - baconator/sql
+  exclude-rules:
+    # Exclude some linters from running on tests files.
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec

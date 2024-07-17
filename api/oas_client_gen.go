@@ -29,12 +29,12 @@ type Invoker interface {
 	//
 	// POST /resources
 	ResourcesPost(ctx context.Context, request *Resource) (*Resource, error)
-	// ResourcesResourceIdGet invokes GET /resources/{resourceId} operation.
+	// ResourcesResourceIDGet invokes GET /resources/{resourceID} operation.
 	//
 	// Return resources.
 	//
-	// GET /resources/{resourceId}
-	ResourcesResourceIdGet(ctx context.Context, params ResourcesResourceIdGetParams) (*Resource, error)
+	// GET /resources/{resourceID}
+	ResourcesResourceIDGet(ctx context.Context, params ResourcesResourceIDGetParams) (*Resource, error)
 	// UserPatch invokes PATCH /user operation.
 	//
 	// Update a user.
@@ -228,20 +228,20 @@ func (c *Client) sendResourcesPost(ctx context.Context, request *Resource) (res 
 	return result, nil
 }
 
-// ResourcesResourceIdGet invokes GET /resources/{resourceId} operation.
+// ResourcesResourceIDGet invokes GET /resources/{resourceID} operation.
 //
 // Return resources.
 //
-// GET /resources/{resourceId}
-func (c *Client) ResourcesResourceIdGet(ctx context.Context, params ResourcesResourceIdGetParams) (*Resource, error) {
-	res, err := c.sendResourcesResourceIdGet(ctx, params)
+// GET /resources/{resourceID}
+func (c *Client) ResourcesResourceIDGet(ctx context.Context, params ResourcesResourceIDGetParams) (*Resource, error) {
+	res, err := c.sendResourcesResourceIDGet(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendResourcesResourceIdGet(ctx context.Context, params ResourcesResourceIdGetParams) (res *Resource, err error) {
+func (c *Client) sendResourcesResourceIDGet(ctx context.Context, params ResourcesResourceIDGetParams) (res *Resource, err error) {
 	otelAttrs := []attribute.KeyValue{
 		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/resources/{resourceId}"),
+		semconv.HTTPRouteKey.String("/resources/{resourceID}"),
 	}
 
 	// Run stopwatch.
@@ -256,7 +256,7 @@ func (c *Client) sendResourcesResourceIdGet(ctx context.Context, params Resource
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "ResourcesResourceIdGet",
+	ctx, span := c.cfg.Tracer.Start(ctx, "ResourcesResourceIDGet",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -276,14 +276,14 @@ func (c *Client) sendResourcesResourceIdGet(ctx context.Context, params Resource
 	var pathParts [2]string
 	pathParts[0] = "/resources/"
 	{
-		// Encode "resourceId" parameter.
+		// Encode "resourceID" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "resourceId",
+			Param:   "resourceID",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.ResourceId))
+			return e.EncodeValue(conv.IntToString(params.ResourceID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -306,7 +306,7 @@ func (c *Client) sendResourcesResourceIdGet(ctx context.Context, params Resource
 		var satisfied bitset
 		{
 			stage = "Security:OAuth2"
-			switch err := c.securityOAuth2(ctx, "ResourcesResourceIdGet", r); {
+			switch err := c.securityOAuth2(ctx, "ResourcesResourceIDGet", r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -342,7 +342,7 @@ func (c *Client) sendResourcesResourceIdGet(ctx context.Context, params Resource
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeResourcesResourceIdGetResponse(resp)
+	result, err := decodeResourcesResourceIDGetResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
