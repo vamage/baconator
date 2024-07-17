@@ -26,3 +26,6 @@ jobs:
         with:
           version: latest
           args: -v
+      - name: try again
+        run: |
+          /home/runner/golangci-lint-1.59.1-linux-amd64/golangci-lint run -v 
