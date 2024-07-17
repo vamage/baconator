@@ -18,6 +18,9 @@ jobs:
           # - 1.18beta1 -> 1.18.0-beta.1
           # - 1.18rc1 -> 1.18.0-rc.1
           go-version: ${{ env.GO_VERSION }}
+      - name: Check go mod
+        run: |
+          go mod tidy
       - name: lint
         uses: golangci/golangci-lint-action@v6.0.1
         with:
