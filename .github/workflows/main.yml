@@ -18,6 +18,13 @@ jobs:
           # - 1.18beta1 -> 1.18.0-beta.1
           # - 1.18rc1 -> 1.18.0-rc.1
           go-version: ${{ env.GO_VERSION }}
+      - name: go mod
+        run: |
+          go mod tidy
+          go generate
+          git diff --exit-code -- go.mod || (echo "Go file go.mod is dirty, update the file with 'go mod tidy' locally." && exit 1)
+          git diff --exit-code -- go.sum || (echo "Go file go.sum is dirty, update the file with 'go mod tidy' locally." && exit 1)
+          git diff --exit-code -- sql/user/*.go api/*.go || (echo "Go generatre is dirty, update the file with 'go generate' locally." && exit 1)
       - name: lint
         uses: golangci/golangci-lint-action@v6
         with:
