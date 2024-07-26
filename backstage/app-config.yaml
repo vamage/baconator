@@ -3,9 +3,10 @@ app:
   baseUrl: http://localhost:7007
 
 organization:
-  name: My Company
+  name: Evil Router
 
 backend:
+
   # Used for enabling authentication, secret is shared by all backend plugins
   # See https://backstage.io/docs/auth/service-to-service-auth for
   # information on the format
@@ -36,6 +37,14 @@ backend:
       password: ${POSTGRES_PASSWORD}
       database: ${POSTGRES_DB}
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
+  reading:
+    allow:
+      - host: '*'
+      - host: 'backstage:7007'
+      - host: 'baconator:8081'
+      - host: 'baconator'
+
+
 
 integrations:
   github:
@@ -55,7 +64,7 @@ proxy:
   #   '/test':
   #     target: 'https://example.com'
   #     changeOrigin: true
-
+  '/baoncator': http://baconator:8081
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
 # Note: After experimenting with basic setup, use CI/CD to generate docs
 # and an external cloud storage when deploying TechDocs for production use-case.
@@ -77,6 +86,14 @@ scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
 
 catalog:
+  providers:
+    catalog-backend-module-baconator-catalog-connector:
+      schedule:
+        initalDelay{ seconds: 30 }
+        frequency{ minutes: 10 }
+        timeout{ seconds: 60 }
+
+      readUrl: http://baconator:8081/users
   import:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
@@ -99,9 +116,7 @@ catalog:
       rules:
         - allow: [User, Group]
 
-   ##Uncomment these lines to add more example data
-    - type: url
-      target: http://baconator:8081/users.yaml
+
 
     ## Uncomment these lines to add an example org
     # - type: url

@@ -36,7 +36,7 @@ func (UnimplementedHandler) ResourcesResourceIDGet(ctx context.Context, params R
 // Update a user.
 //
 // PATCH /user
-func (UnimplementedHandler) UserPatch(ctx context.Context, req *User) (r *User, _ error) {
+func (UnimplementedHandler) UserPatch(ctx context.Context, req *Entity) (r *Entity, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -45,7 +45,16 @@ func (UnimplementedHandler) UserPatch(ctx context.Context, req *User) (r *User, 
 // Add a new user.
 //
 // POST /user
-func (UnimplementedHandler) UserPost(ctx context.Context, req *User) (r *User, _ error) {
+func (UnimplementedHandler) UserPost(ctx context.Context, req *Entity) (r *Entity, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UsersGet implements GET /users operation.
+//
+// Return all users.
+//
+// GET /users
+func (UnimplementedHandler) UsersGet(ctx context.Context) (r []Entity, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -54,16 +63,7 @@ func (UnimplementedHandler) UserPost(ctx context.Context, req *User) (r *User, _
 // Return user by id.
 //
 // GET /users/{userId}
-func (UnimplementedHandler) UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (r *User, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// UsersYamlGet implements GET /users.yaml operation.
-//
-// Return all users.
-//
-// GET /users.yaml
-func (UnimplementedHandler) UsersYamlGet(ctx context.Context) (r *User, _ error) {
+func (UnimplementedHandler) UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (r *Entity, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -72,7 +72,7 @@ func (UnimplementedHandler) UsersYamlGet(ctx context.Context) (r *User, _ error)
 // Return user from oauth token.
 //
 // GET /whoami
-func (UnimplementedHandler) WhoamiGet(ctx context.Context) (r *User, _ error) {
+func (UnimplementedHandler) WhoamiGet(ctx context.Context) (r *Entity, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

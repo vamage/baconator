@@ -10,7 +10,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      DATABASE_URL: postgresql://postgres:example@db/postgres
+      DATABASE_URL: postgresql://postgres:example@db/baconator
   backstage:
     image: backstage
     restart: always

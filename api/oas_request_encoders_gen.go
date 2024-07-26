@@ -26,7 +26,7 @@ func encodeResourcesPostRequest(
 }
 
 func encodeUserPatchRequest(
-	req *User,
+	req *Entity,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -40,7 +40,7 @@ func encodeUserPatchRequest(
 }
 
 func encodeUserPostRequest(
-	req *User,
+	req *Entity,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

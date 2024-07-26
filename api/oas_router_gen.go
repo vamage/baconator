@@ -141,30 +141,16 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					}
 
 					if len(elem) == 0 {
-						break
+						switch r.Method {
+						case "GET":
+							s.handleUsersGetRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
 					}
 					switch elem[0] {
-					case '.': // Prefix: ".yaml"
-						origElem := elem
-						if l := len(".yaml"); len(elem) >= l && elem[0:l] == ".yaml" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch r.Method {
-							case "GET":
-								s.handleUsersYamlGetRequest([0]string{}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, "GET")
-							}
-
-							return
-						}
-
-						elem = origElem
 					case '/': // Prefix: "/"
 						origElem := elem
 						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
@@ -411,34 +397,20 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
-						break
+						switch method {
+						case "GET":
+							r.name = "UsersGet"
+							r.summary = ""
+							r.operationID = ""
+							r.pathPattern = "/users"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
 					}
 					switch elem[0] {
-					case '.': // Prefix: ".yaml"
-						origElem := elem
-						if l := len(".yaml"); len(elem) >= l && elem[0:l] == ".yaml" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch method {
-							case "GET":
-								r.name = "UsersYamlGet"
-								r.summary = ""
-								r.operationID = ""
-								r.pathPattern = "/users.yaml"
-								r.args = args
-								r.count = 0
-								return r, true
-							default:
-								return
-							}
-						}
-
-						elem = origElem
 					case '/': // Prefix: "/"
 						origElem := elem
 						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {

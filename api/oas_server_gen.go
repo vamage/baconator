@@ -25,31 +25,31 @@ type Handler interface {
 	// Update a user.
 	//
 	// PATCH /user
-	UserPatch(ctx context.Context, req *User) (*User, error)
+	UserPatch(ctx context.Context, req *Entity) (*Entity, error)
 	// UserPost implements POST /user operation.
 	//
 	// Add a new user.
 	//
 	// POST /user
-	UserPost(ctx context.Context, req *User) (*User, error)
+	UserPost(ctx context.Context, req *Entity) (*Entity, error)
+	// UsersGet implements GET /users operation.
+	//
+	// Return all users.
+	//
+	// GET /users
+	UsersGet(ctx context.Context) ([]Entity, error)
 	// UsersUserIdGet implements GET /users/{userId} operation.
 	//
 	// Return user by id.
 	//
 	// GET /users/{userId}
-	UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (*User, error)
-	// UsersYamlGet implements GET /users.yaml operation.
-	//
-	// Return all users.
-	//
-	// GET /users.yaml
-	UsersYamlGet(ctx context.Context) (*User, error)
+	UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (*Entity, error)
 	// WhoamiGet implements GET /whoami operation.
 	//
 	// Return user from oauth token.
 	//
 	// GET /whoami
-	WhoamiGet(ctx context.Context) (*User, error)
+	WhoamiGet(ctx context.Context) (*Entity, error)
 	// NewError creates *ErrorStatusCode from error returned by handler.
 	//
 	// Used for common default response.

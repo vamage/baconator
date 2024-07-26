@@ -87,7 +87,7 @@ func (s *Server) decodeResourcesPostRequest(r *http.Request) (
 }
 
 func (s *Server) decodeUserPatchRequest(r *http.Request) (
-	req *User,
+	req *Entity,
 	close func() error,
 	rerr error,
 ) {
@@ -126,7 +126,7 @@ func (s *Server) decodeUserPatchRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request User
+		var request Entity
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -158,7 +158,7 @@ func (s *Server) decodeUserPatchRequest(r *http.Request) (
 }
 
 func (s *Server) decodeUserPostRequest(r *http.Request) (
-	req *User,
+	req *Entity,
 	close func() error,
 	rerr error,
 ) {
@@ -197,7 +197,7 @@ func (s *Server) decodeUserPostRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request User
+		var request Entity
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err

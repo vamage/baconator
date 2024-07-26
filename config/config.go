@@ -23,7 +23,11 @@ var conf *Configuration
 
 // New creates a new Configuration struct.
 func New() *Configuration {
-	pool, err := pgxpool.ParseConfig("postgresql://postgres:example@db/baconator")
+	pgurl := os.Getenv("DATABASE_URL")
+	if pgurl == "" {
+		pgurl = "postgresql://postgres:example@127.0.0.1/baconator"
+	}
+	pool, err := pgxpool.ParseConfig(pgurl)
 	if err != nil {
 		panic(err)
 	}

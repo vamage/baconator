@@ -40,31 +40,31 @@ type Invoker interface {
 	// Update a user.
 	//
 	// PATCH /user
-	UserPatch(ctx context.Context, request *User) (*User, error)
+	UserPatch(ctx context.Context, request *Entity) (*Entity, error)
 	// UserPost invokes POST /user operation.
 	//
 	// Add a new user.
 	//
 	// POST /user
-	UserPost(ctx context.Context, request *User) (*User, error)
+	UserPost(ctx context.Context, request *Entity) (*Entity, error)
+	// UsersGet invokes GET /users operation.
+	//
+	// Return all users.
+	//
+	// GET /users
+	UsersGet(ctx context.Context) ([]Entity, error)
 	// UsersUserIdGet invokes GET /users/{userId} operation.
 	//
 	// Return user by id.
 	//
 	// GET /users/{userId}
-	UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (*User, error)
-	// UsersYamlGet invokes GET /users.yaml operation.
-	//
-	// Return all users.
-	//
-	// GET /users.yaml
-	UsersYamlGet(ctx context.Context) (*User, error)
+	UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (*Entity, error)
 	// WhoamiGet invokes GET /whoami operation.
 	//
 	// Return user from oauth token.
 	//
 	// GET /whoami
-	WhoamiGet(ctx context.Context) (*User, error)
+	WhoamiGet(ctx context.Context) (*Entity, error)
 }
 
 // Client implements OAS client.
@@ -355,12 +355,12 @@ func (c *Client) sendResourcesResourceIDGet(ctx context.Context, params Resource
 // Update a user.
 //
 // PATCH /user
-func (c *Client) UserPatch(ctx context.Context, request *User) (*User, error) {
+func (c *Client) UserPatch(ctx context.Context, request *Entity) (*Entity, error) {
 	res, err := c.sendUserPatch(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendUserPatch(ctx context.Context, request *User) (res *User, err error) {
+func (c *Client) sendUserPatch(ctx context.Context, request *Entity) (res *Entity, err error) {
 	otelAttrs := []attribute.KeyValue{
 		semconv.HTTPMethodKey.String("PATCH"),
 		semconv.HTTPRouteKey.String("/user"),
@@ -462,12 +462,12 @@ func (c *Client) sendUserPatch(ctx context.Context, request *User) (res *User, e
 // Add a new user.
 //
 // POST /user
-func (c *Client) UserPost(ctx context.Context, request *User) (*User, error) {
+func (c *Client) UserPost(ctx context.Context, request *Entity) (*Entity, error) {
 	res, err := c.sendUserPost(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendUserPost(ctx context.Context, request *User) (res *User, err error) {
+func (c *Client) sendUserPost(ctx context.Context, request *Entity) (res *Entity, err error) {
 	otelAttrs := []attribute.KeyValue{
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/user"),
@@ -531,17 +531,88 @@ func (c *Client) sendUserPost(ctx context.Context, request *User) (res *User, er
 	return result, nil
 }
 
+// UsersGet invokes GET /users operation.
+//
+// Return all users.
+//
+// GET /users
+func (c *Client) UsersGet(ctx context.Context) ([]Entity, error) {
+	res, err := c.sendUsersGet(ctx)
+	return res, err
+}
+
+func (c *Client) sendUsersGet(ctx context.Context) (res []Entity, err error) {
+	otelAttrs := []attribute.KeyValue{
+		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/users"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, "UsersGet",
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/users"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeUsersGetResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // UsersUserIdGet invokes GET /users/{userId} operation.
 //
 // Return user by id.
 //
 // GET /users/{userId}
-func (c *Client) UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (*User, error) {
+func (c *Client) UsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (*Entity, error) {
 	res, err := c.sendUsersUserIdGet(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendUsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (res *User, err error) {
+func (c *Client) sendUsersUserIdGet(ctx context.Context, params UsersUserIdGetParams) (res *Entity, err error) {
 	otelAttrs := []attribute.KeyValue{
 		semconv.HTTPMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/users/{userId}"),
@@ -620,88 +691,17 @@ func (c *Client) sendUsersUserIdGet(ctx context.Context, params UsersUserIdGetPa
 	return result, nil
 }
 
-// UsersYamlGet invokes GET /users.yaml operation.
-//
-// Return all users.
-//
-// GET /users.yaml
-func (c *Client) UsersYamlGet(ctx context.Context) (*User, error) {
-	res, err := c.sendUsersYamlGet(ctx)
-	return res, err
-}
-
-func (c *Client) sendUsersYamlGet(ctx context.Context) (res *User, err error) {
-	otelAttrs := []attribute.KeyValue{
-		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/users.yaml"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "UsersYamlGet",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/users.yaml"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeUsersYamlGetResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // WhoamiGet invokes GET /whoami operation.
 //
 // Return user from oauth token.
 //
 // GET /whoami
-func (c *Client) WhoamiGet(ctx context.Context) (*User, error) {
+func (c *Client) WhoamiGet(ctx context.Context) (*Entity, error) {
 	res, err := c.sendWhoamiGet(ctx)
 	return res, err
 }
 
-func (c *Client) sendWhoamiGet(ctx context.Context) (res *User, err error) {
+func (c *Client) sendWhoamiGet(ctx context.Context) (res *Entity, err error) {
 	otelAttrs := []attribute.KeyValue{
 		semconv.HTTPMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/whoami"),

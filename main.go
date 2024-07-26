@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/vamage/baconator/config"
+
 	"github.com/vamage/baconator/handlers"
 	"github.com/vamage/baconator/security"
 
@@ -15,6 +17,7 @@ import (
 
 func main() {
 	fmt.Println("Hello, World!")
+	config.New()
 	service := &handlers.Handler{}
 	sec := &security.Security{}
 	srv, _ := api.NewServer(service, sec)

@@ -3,7 +3,7 @@
 package api
 
 // setDefaults set default value of fields.
-func (s *Input) setDefaults() {
+func (s *Entity) setDefaults() {
 	{
 		val := string("backstage.io/v1alpha1")
 		s.ApiVersion.SetTo(val)
@@ -15,7 +15,7 @@ func (s *Input) setDefaults() {
 }
 
 // setDefaults set default value of fields.
-func (s *User) setDefaults() {
+func (s *Input) setDefaults() {
 	{
 		val := string("backstage.io/v1alpha1")
 		s.ApiVersion.SetTo(val)
